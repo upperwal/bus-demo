@@ -28,6 +28,7 @@ func main() {
 	gpxFile := flag.String("gpx", "dummy.gpx", "GPX file path")
 	ra := flag.String("ra", "", "Remote Access")
 	bsNodes := flag.String("bs", "/ip4/127.0.0.1/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", "Bootstrap Nodes")
+	flag.Parse()
 
 	app, err := application.NewApplication(context.Background(), nil, nil)
 	if err != nil {
