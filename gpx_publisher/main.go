@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"flag"
 
 	proto "github.com/golang/protobuf/proto"
 	logging "github.com/ipfs/go-log"
@@ -24,18 +25,22 @@ func main() {
 	logging.SetLogLevel("pubsub", "DEBUG")
 	logging.SetLogLevel("eth-driver", "DEBUG")
 
+	gpxFile := flag.String("gpx", "dummy.gpx", "GPX file path")
+	ra := flag.String("ra", "", "Remote Access")
+	bsNodes := flag.String("bs", "/ip4/127.0.0.1/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", "Bootstrap Nodes")
+
 	app, err := application.NewApplication(context.Background(), nil, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	ethDriver, err := driver.NewEthDriver()
+	ethDriver, err := driver.NewEthDriver(*ra)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	}
 
-	bservice := bootservice.NewBootstrapService(false, "abc", []string{"/ip4/127.0.0.1/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9"})
+	bservice := bootservice.NewBootstrapService(false, "abc", []string{*bsNodes})
 	pubService := pubservice.NewPublisherService(ethDriver)
 
 	app.InjectService(bservice)
@@ -51,7 +56,7 @@ func main() {
 	pubService.RegisterToPublish("GGN.BUS")
 
 	gpxDataChan := make(chan gpx.GPXPoint, 10)
-	go readGPX(gpxDataChan)
+	go readGPX(gpxDataChan, *gpxFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
@@ -78,8 +83,8 @@ func main() {
 
 }
 
-func readGPX(out chan gpx.GPXPoint) error {
-	bus, err := gpx.ParseFile("dummy.gpx")
+func readGPX(out chan gpx.GPXPoint, gpxFile string) error {
+	bus, err := gpx.ParseFile(gpxFile)
 	if err != nil {
 		return err
 	}

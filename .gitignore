@@ -1,0 +1,6 @@
+.DS_Store
+
+gpx_subscriber/
+node_modules/
+
+main

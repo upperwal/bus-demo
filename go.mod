@@ -7,6 +7,7 @@ require (
 	github.com/ipfs/go-log v0.0.1
 	github.com/tkrajina/gpxgo v1.0.1
 	github.com/upperwal/go-mesh v1.0.0
+	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/grpc v1.20.1
 )
 
