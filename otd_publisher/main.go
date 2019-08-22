@@ -14,6 +14,7 @@ import (
 
 	logging "github.com/ipfs/go-log"
 	application "github.com/upperwal/go-mesh/application"
+	mutils "github.com/upperwal/go-mesh/cmd/utils"
 	driver "github.com/upperwal/go-mesh/driver/eth"
 	fpubsub "github.com/upperwal/go-mesh/pubsub"
 	bootservice "github.com/upperwal/go-mesh/service/bootstrap"
@@ -33,16 +34,25 @@ func main() {
 	logging.SetLogLevel("eth-driver", "DEBUG")
 
 	ra := flag.String("ra", "http://13.234.78.241:8501", "Remote Access")
+	acc := flag.String("a", "", "Account file (.msa)")
 	bsNodes := flag.String("bs", "/ip4/13.234.78.241/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", "Bootstrap Nodes")
 	flag.Parse()
 
-	app, err := application.NewApplication(context.Background(), nil, nil)
+	if *acc == "" {
+		fmt.Println("Need an account file (.msa). run 'mesh account -c' to get one")
+	}
+	libPrivKey, raPrivKey, err := mutils.GetLibp2pAndRAPrivKey(*acc)
+	if err != nil {
+		panic(err)
+	}
+
+	app, err := application.NewApplication(context.Background(), libPrivKey, nil)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	}
 
-	ethDriver, err := driver.NewEthDriver(*ra, nil)
+	ethDriver, err := driver.NewEthDriver(*ra, raPrivKey)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
