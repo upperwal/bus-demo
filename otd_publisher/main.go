@@ -61,7 +61,10 @@ func main() {
 
 	time.Sleep(3 * time.Second)
 
-	pubService.RegisterToPublish("GGN.BUS")
+	err = pubService.RegisterToPublish("GGN.BUS")
+	if err != nil {
+		panic(err)
+	}
 
 	rawOTDChan := make(chan []byte, 10)
 	go readGPX(rawOTDChan)
