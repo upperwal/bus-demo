@@ -42,7 +42,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	ethDriver, err := driver.NewEthDriver(*ra)
+	ethDriver, err := driver.NewEthDriver(*ra, nil)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
