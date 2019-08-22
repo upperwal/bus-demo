@@ -46,7 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	app, err := application.NewApplication(context.Background(), libPrivKey, nil)
+	app, err := application.NewApplication(context.Background(), libPrivKey, nil, "0.0.0.0", "0")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
